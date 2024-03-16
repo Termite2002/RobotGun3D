@@ -12,18 +12,17 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Info")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
+    [SerializeField] private float turnSpeed;
     private float speed;
-    private Vector3 movementDirection;
     private float verticalVelocity;
+
+    public Vector2 moveInput { get; private set; }
+    private Vector3 movementDirection;
+
     private bool isRunning;
 
-    [Header("Aim Info")]
-    [SerializeField] private Transform aim;
-    [SerializeField] private LayerMask aimLayerMask;
-    private Vector3 lookingDirection;
 
-    private Vector2 moveInput;
-    private Vector2 aimInput;
+
 
 
 
@@ -41,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         ApplyMovement();
-        AimTowardsMouse();
+        ApplyRotation();
         AnimatorController();
     }
     private void AnimatorController()
@@ -57,20 +56,16 @@ public class PlayerMovement : MonoBehaviour
         bool playRunAnim = isRunning && movementDirection.magnitude > 0;
         animator.SetBool("isRunning", playRunAnim);
     }
-    private void AimTowardsMouse()
+    private void ApplyRotation()
     {
-        Ray ray = Camera.main.ScreenPointToRay(aimInput);
 
-        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, aimLayerMask))
-        {
-            lookingDirection = hitInfo.point - transform.position;
-            lookingDirection.y = 0f;
-            lookingDirection.Normalize();
+        Vector3 lookingDirection = player.aim.GetMousePosition() - transform.position;
+        lookingDirection.y = 0f;
+        lookingDirection.Normalize();
 
-            transform.forward = lookingDirection;
+        Quaternion desiredRotation = Quaternion.LookRotation(lookingDirection);
 
-            aim.position = new Vector3(hitInfo.point.x, transform.position.y + 1f, hitInfo.point.z);
-        }
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, turnSpeed * Time.deltaTime);
     }
 
     private void ApplyMovement()
@@ -105,10 +100,6 @@ public class PlayerMovement : MonoBehaviour
         // Move
         controls.Character.Movement.performed += context => moveInput = context.ReadValue<Vector2>();
         controls.Character.Movement.canceled += context => moveInput = Vector2.zero;
-
-        // Aim
-        controls.Character.Aim.performed += context => aimInput = context.ReadValue<Vector2>();
-        controls.Character.Aim.canceled += context => aimInput = Vector2.zero;
 
         // Run
         controls.Character.Run.performed += context =>
