@@ -84,7 +84,14 @@ public class PlayerAim : MonoBehaviour
 
         if (target != null && isLockingToTarget)
         {
-            aim.position = target.position;
+            if (target.TryGetComponent<Renderer>(out Renderer render))
+            {
+                aim.position = render.bounds.center;
+            }
+            else
+            {
+                aim.position = target.position;
+            }
             return;
         }
 
