@@ -5,15 +5,18 @@ using UnityEngine;
 public class PlayerAnimationEvent : MonoBehaviour
 {
     private PlayerWeaponVisuals visualController;
+    private PlayerWeaponController weaponController;
 
     private void Start()
     {
         visualController = GetComponentInParent<PlayerWeaponVisuals>();
+        weaponController = GetComponentInParent<PlayerWeaponController>();
     }
 
     public void ReloadIsOver()
     {
         visualController.MaximizeRigWeight();
+        weaponController.CurrentWeapon().RefillBullets();
     }
     public void ReturnRig()
     {
@@ -25,4 +28,6 @@ public class PlayerAnimationEvent : MonoBehaviour
     {
         visualController.SetBusyGrabbingWeaponTo(false);
     }
+
+    public void SwitchOnWeaponModel() => visualController.SwitchOnCurrentModel();
 }
