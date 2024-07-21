@@ -28,16 +28,19 @@ public class PlayerWeaponController : MonoBehaviour
         player = GetComponent<Player>();
         AssignInputEvents();
 
-        currentWeapon.bulletsInMagazine = currentWeapon.totalReserveAmmo;
+        Invoke(nameof(EquipStartingWeapon), 0.1f);
     }
+    private void EquipStartingWeapon() => EquipWeapon(0);
 
 
     #region Slot Management
     private void EquipWeapon(int i)
     {
+        if (i >= weaponSlots.Count)
+            return;
+
         currentWeapon = weaponSlots[i];
 
-        player.weaponVisuals.SwitchOffWeaponModels();
         player.weaponVisuals.PlayWeaponEquipAnimation();
     }
     public void PickupWeapon(Weapon newWeapon)
@@ -46,29 +49,34 @@ public class PlayerWeaponController : MonoBehaviour
             return;
 
         weaponSlots.Add(newWeapon);
+        player.weaponVisuals.SwitchOnBackupWeaponModel();
     }
     private void DropWeapon()
     {
-        if (weaponSlots.Count <= 1)
+        if (HasOnlyOneWeapon())
         {
             return;
         }
 
         weaponSlots.Remove(currentWeapon);
-        currentWeapon = weaponSlots[0];
+        EquipWeapon(0);
     }
     #endregion
+
 
     private void Shoot()
     {
         if (currentWeapon.CanShoot() == false)
             return;
 
-        Debug.Log("Shoot");
+        //Debug.Log("Shoot");
 
         //currentWeapon.bulletsInMagazine--;
 
-        GameObject newBullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.LookRotation(gunPoint.forward));
+        GameObject newBullet = ObjectPool.instance.GetBullet();
+
+        newBullet.transform.position = gunPoint.position;
+        newBullet.transform.rotation = Quaternion.LookRotation(gunPoint.forward);
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
 
@@ -76,7 +84,6 @@ public class PlayerWeaponController : MonoBehaviour
         rbNewBullet.velocity = BulletDirection() * bulletSpeed;
 
 
-        Destroy(newBullet, 10);
         GetComponentInChildren<Animator>().SetTrigger("Fire");
     }
 
@@ -95,7 +102,19 @@ public class PlayerWeaponController : MonoBehaviour
         return direction;
     }
 
+
+    public bool HasOnlyOneWeapon() => weaponSlots.Count <= 1;
     public Weapon CurrentWeapon() => currentWeapon;
+    public Weapon BackupWeapon()
+    {
+        foreach(Weapon weapon in weaponSlots)
+        {
+            if (weapon != currentWeapon)
+                return weapon;
+        }
+
+        return null;
+    }
 
     public Transform GunPoint() => gunPoint;
 
