@@ -22,8 +22,18 @@ public class Weapon
 
     [Header("Shooting Specifics")]
     public ShootType shootType;
-    public float fireRate = 1; // bullet/second
+    public int bulletsPerShot;
+    public float defaultFireRate;
+    public float fireRate = 1;        // bullets/second
     private float lastShootTime;
+
+    [Header("Burst Fire")]
+    public bool burstAvailable;
+    public bool burstActive;
+
+    public int burstBulletsPerShot;
+    public float burstFireRate;
+    public float burstFireDelay = 0.1f;
 
     [Header("Magazine details")]
     public int bulletsInMagazine;
@@ -34,6 +44,10 @@ public class Weapon
     public float reloadSpeed = 1;
     [Range(1, 3)]
     public float equipmentSpeed = 1;
+    [Range(2, 12)]
+    public float gunDistance = 4;
+    [Range(3, 8)]
+    public float cameraDistance = 6;
 
 
     [Header("Spread")]
@@ -74,16 +88,41 @@ public class Weapon
     }
     #endregion
 
-    public bool CanShoot()
+    #region Burst methods
+
+    public bool BurstActivated()
     {
-        if (HaveEnoughBullets() && ReadyToFire())
+        if (weaponType == WeaponType.Shotgun)
         {
-            bulletsInMagazine--;
+            burstFireDelay = 0;
             return true;
         }
 
-        return false;
+        return burstActive;
     }
+
+    public void ToggleBurst()
+    {
+        if (burstAvailable == false)
+            return;
+
+        burstActive = !burstActive;
+
+        if (burstActive)
+        {
+            bulletsPerShot = burstBulletsPerShot;
+            fireRate = burstFireRate;
+        }
+        else
+        {
+            bulletsPerShot = 1;
+            fireRate = defaultFireRate;
+        }
+    }
+
+    #endregion
+
+    public bool CanShoot() => HaveEnoughBullets() && ReadyToFire();
     private bool ReadyToFire()
     {
         if (Time.time > lastShootTime + 1 / fireRate)

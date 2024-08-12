@@ -44,14 +44,15 @@ public class PlayerWeaponController : MonoBehaviour
     #region Slot Management
     private void EquipWeapon(int i)
     {
-        SetWeaponReady(false);
-
         if (i >= weaponSlots.Count)
             return;
 
-        currentWeapon = weaponSlots[i];
+        SetWeaponReady(false);
 
+        currentWeapon = weaponSlots[i];
         player.weaponVisuals.PlayWeaponEquipAnimation();
+
+        CameraManager.instance.ChangeCameraDistance(currentWeapon.cameraDistance);
     }
     public void PickupWeapon(Weapon newWeapon)
     {
@@ -86,8 +87,40 @@ public class PlayerWeaponController : MonoBehaviour
         if (currentWeapon.CanShoot() == false)
             return;
 
+        player.weaponVisuals.PlayFireAnimation();
+
         if (currentWeapon.shootType == ShootType.Single)
             isShooting = false;
+
+
+        if (currentWeapon.BurstActivated())
+        {
+            StartCoroutine(BurstFire());
+            return;
+        }
+
+        FireSingleBullet();
+    }
+
+    private IEnumerator BurstFire()
+    {
+        SetWeaponReady(false);
+
+        for (int i = 1; i <= currentWeapon.bulletsPerShot; i++)
+        {
+            FireSingleBullet();     
+            yield return new WaitForSeconds(currentWeapon.burstFireDelay);
+
+            //if (i >= currentWeapon.bulletsPerShot)
+        }
+
+        SetWeaponReady(true);
+        
+    }
+
+    private void FireSingleBullet()
+    {
+        currentWeapon.bulletsInMagazine--;
 
         GameObject newBullet = ObjectPool.instance.GetBullet();
 
@@ -95,14 +128,13 @@ public class PlayerWeaponController : MonoBehaviour
         newBullet.transform.rotation = Quaternion.LookRotation(GunPoint().forward);
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
+        Bullet bulletScript = newBullet.GetComponent<Bullet>();
+        bulletScript.BulletSetup(currentWeapon.gunDistance);
 
         Vector3 bulletsDirection = currentWeapon.ApplySpread(BulletDirection());
 
         rbNewBullet.mass = REFERENCE_BULLET_SPEED / bulletSpeed;
         rbNewBullet.velocity = bulletsDirection * bulletSpeed;
-
-
-        player.weaponVisuals.PlayFireAnimation();
     }
 
     private void Reload()
@@ -127,17 +159,18 @@ public class PlayerWeaponController : MonoBehaviour
 
 
     public bool HasOnlyOneWeapon() => weaponSlots.Count <= 1;
-    public Weapon CurrentWeapon() => currentWeapon;
-    public Weapon BackupWeapon()
+    public Weapon WeaponInSlots(WeaponType weaponType)
     {
         foreach(Weapon weapon in weaponSlots)
         {
-            if (weapon != currentWeapon)
+            if (weapon.weaponType == weaponType)
                 return weapon;
         }
 
         return null;
     }
+    public Weapon CurrentWeapon() => currentWeapon;
+
 
     public Transform GunPoint() => player.weaponVisuals.CurrentWeaponModel().gunPoint;
 
@@ -150,7 +183,10 @@ public class PlayerWeaponController : MonoBehaviour
         controls.Character.Fire.canceled += context => isShooting = false;
 
         controls.Character.EquipSlot1.performed += context => EquipWeapon(0);
-        controls.Character.EqipSlot2.performed += context => EquipWeapon(1);
+        controls.Character.EquipSlot2.performed += context => EquipWeapon(1);
+        controls.Character.EquipSlot3.performed += context => EquipWeapon(2);
+        controls.Character.EquipSlot4.performed += context => EquipWeapon(3);
+        controls.Character.EquipSlot5.performed += context => EquipWeapon(4);
 
         controls.Character.DropCurrentWeapon.performed += context => DropWeapon();
 
@@ -161,6 +197,8 @@ public class PlayerWeaponController : MonoBehaviour
                 Reload();
             }
         };
+
+        controls.Character.ToggleWeaponMode.performed += context => currentWeapon.ToggleBurst();
     }
 
 

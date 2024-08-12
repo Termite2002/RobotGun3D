@@ -51,9 +51,36 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Eqip Slot - 2",
+                    "name": "Equip Slot - 2",
                     "type": "Button",
                     "id": "82e8febc-f58c-4c75-87cd-d27c956437a3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot - 3",
+                    "type": "Button",
+                    "id": "7b3c0bcc-3896-41f3-b2c8-c2eb53320756",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot - 4",
+                    "type": "Button",
+                    "id": "dab87ce0-3f3c-46bf-beac-31c60b4bd0ad",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot - 5",
+                    "type": "Button",
+                    "id": "6fae0691-8f59-4066-8870-a7d8a704fa83",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -72,6 +99,15 @@
                     "name": "Reload",
                     "type": "Button",
                     "id": "a592a9ba-2627-4428-be1e-af87bbbf7132",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle Weapon Mode",
+                    "type": "Button",
+                    "id": "e37ba813-2469-495d-821a-be4be9e8bdd8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -196,7 +232,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Eqip Slot - 2",
+                    "action": "Equip Slot - 2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -219,6 +255,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ce79dcf-5c82-48b1-b912-48bdf874e09d",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equip Slot - 3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ebad7984-e00d-4409-901b-ad83a5f4b504",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equip Slot - 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93f8d200-d0dc-41cf-86be-d6db058655c4",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Equip Slot - 5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "687d5342-3b94-4f62-ab8d-01091f448c3f",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Weapon Mode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
