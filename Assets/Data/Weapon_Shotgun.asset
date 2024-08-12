@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a62c6d2db2a054bbfbcce7fb3de56b, type: 3}
+  m_Name: Weapon_Shotgun
+  m_EditorClassIdentifier: 
+  weaponName: Benelli M1014
+  shootType: 0
+  bulletsPerShot: 5
+  fireRate: 2
+  bulletsInMagazine: 30
+  magazineCapacity: 30
+  totalReserveAmmo: 99999999
+  burstAvailable: 0
+  burstActive: 0
+  burstBulletsPerShot: 3
+  burstFireRate: 1.5
+  burstFireDelay: 0.1
+  baseSpread: 15
+  maxSpread: 15
+  spreadIncreaseRate: 0.15
+  weaponType: 3
+  reloadSpeed: 1.22
+  equipmentSpeed: 1.66
+  gunDistance: 4.83
+  cameraDistance: 4.83
